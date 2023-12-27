@@ -1,0 +1,28 @@
+# 편의상 spring.config.activate.on-profile 별로 설정을 다르게 하지는 않았습니다.
+# 그래서 local이나 개발환경에서만 쓰일 법한 설정도 그대로 두고 작업했습니다.
+# local, dev, sandbox, cbt, production 등 환경별 설정을 구분해야하는 것이 맞습니다.
+# 이점 감안해주시고 봐주시면 감사하겠습니다.
+spring:
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        format_sql: true
+        show_sql: true
+  sql:
+    init:
+      mode: embedded
+  datasource:
+    url: jdbc:h2:mem:blog;MODE=MySQL;DATABASE_TO_LOWER=TRUE;DB_CLOSE_DELAY=-1
+    driver-class-name: org.h2.Driver
+    hikari:
+      maximum-pool-size: 30
+      max-lifetime: 3600000 # 1hour
+      idle-timeout: 300000 # 5min
+      minimum-idle: 2
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
