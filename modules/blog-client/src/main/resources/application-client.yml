@@ -1,0 +1,27 @@
+spring.cloud.openfeign:
+  client:
+    config:
+      kakao-api:
+        connect-timeout: 3000
+        read-timeout: 3000
+        logger-level: full # none, basic, headers, full
+      naver-api:
+        connect-timeout: 3000
+        read-timeout: 3000
+        logger-level: full # none, basic, headers, full
+  compression:
+    response:
+      enabled: false
+  httpclient:
+    follow-redirects: true
+    max-connections: 200
+    max-connections-per-route: 100
+
+client:
+  kakao:
+    url: https://dapi.kakao.com
+    auth-token: t3RjuQRC6VA/pZnnHa/JV1grfzUM/9hkL9cLMjhvjEyAU8sVTEBBFq1wTV+vkmZ4
+  naver:
+    url: https://openapi.naver.com
+    client-id: DQrI05qMlrdu0hgfgrS86NR26xQBDBcXGLhbVCMojwg=
+    client-secret: Zthkg/qTXSJWkTVpg98VPAUqxFMYbI8f

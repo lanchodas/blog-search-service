@@ -1,21 +1,49 @@
 package org.blog.api.exception
 
-import org.springframework.http.HttpStatus
+import org.blog.client.BlogClientException
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 
 @ControllerAdvice
 class ExceptionHandler {
 
-    @ExceptionHandler(RuntimeException::class)
-    fun handleRuntimeException(e: RuntimeException): ResponseEntity<ApiErrorResponse> {
-        val apiErrorResponse = ApiErrorResponse(500, e.message ?: "알 수 없는 에러가 발생했습니다.")
-        return ResponseEntity(apiErrorResponse, HttpStatus.INTERNAL_SERVER_ERROR)
+    @ExceptionHandler(ApiException::class)
+    fun handleRuntimeException(e: ApiException): ResponseEntity<ApiErrorResponse> {
+        return ResponseEntity(
+            ApiErrorResponse(e.errorType.code, e.errorType.message),
+            e.errorType.httpStatus
+        )
+    }
+
+    @ExceptionHandler(BlogClientException::class)
+    fun handleRuntimeException(e: BlogClientException): ResponseEntity<ApiErrorResponse> {
+        return ResponseEntity(
+            ApiErrorResponse(ErrorType.BLOG_CLIENT_ERROR.code, e.message),
+            ErrorType.BLOG_CLIENT_ERROR.httpStatus
+        )
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException::class)
+    fun handleRuntimeException(e: MethodArgumentNotValidException): ResponseEntity<ApiErrorResponse> {
+        return ResponseEntity(
+            ApiErrorResponse(ErrorType.BAD_REQUEST.code, e.message),
+            ErrorType.BAD_REQUEST.httpStatus
+        )
+    }
+
+    @ExceptionHandler(Exception::class)
+    fun handleRuntimeException(e: Exception): ResponseEntity<ApiErrorResponse> {
+        val apiErrorResponse = ApiErrorResponse(
+            ErrorType.INTERNAL_SERVER_ERROR.code,
+            e.message ?: ErrorType.INTERNAL_SERVER_ERROR.message ?: "알 수 없는 에러가 발생했습니다."
+        )
+        return ResponseEntity(apiErrorResponse, ErrorType.INTERNAL_SERVER_ERROR.httpStatus)
     }
 }
 
 data class ApiErrorResponse(
-    val code: Int,
-    val message: String
+    val code: ErrorCode,
+    val message: String?
 )

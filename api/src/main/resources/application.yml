@@ -4,3 +4,11 @@ server:
 spring:
   profiles:
     include: client, database
+  jackson:
+    default-property-inclusion: non_null
+    property-naming-strategy: SNAKE_CASE
+# clients.order에 정의한 순서 대로 호출합니다.
+# 첫 번째 클라이언트를 먼저 사용하고, 특정 조건에 따라 서킷이 열릴 경우 두 번째 클라이언트를 사용합니다.
+# 여기서 정의하는 값은 blog-client 모듈의 BlogClients enum 값을 사용합니다.
+clients:
+  order: KAKAO_CLIENT, NAVER_CLIENT
