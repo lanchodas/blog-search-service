@@ -7,7 +7,34 @@ spring:
   jackson:
     default-property-inclusion: non_null
     property-naming-strategy: SNAKE_CASE
-# clients.order에 정의한 순서 대로 호출합니다.
+resilience4j.circuitbreaker:
+  configs:
+    default:
+      sliding-window-type: COUNT_BASED
+      register-health-indicator: true
+      automatic-transition-from-open-to-half-open-enabled: true
+      ignore-exceptions:
+        - java.lang.RuntimeException
+        - java.lang.Error
+        - java.lang.Throwable
+        - org.springframework.web.bind.MethodArgumentNotValidException
+        - org.blog.api.exception.ApiException
+  instances:
+    blogSearchCircuitBreaker:
+      base-config: default
+      failure-rate-threshold: 50
+      sliding-window-size: 10
+      minimum-number-of-calls: 5
+      wait-duration-in-open-state: 60s
+      permitted-number-of-calls-in-half-open-state: 6
+      event-consumer-buffer-size: 100
+      record-exceptions:
+        - java.io.IOException
+        - java.net.SocketTimeoutException
+        - java.util.concurrent.TimeoutException
+        - feign.FeignException
+        - org.blog.client.BlogClientException
+# clients.order에 정의한 순서 대로 블로그 클라이언트를 호출합니다.
 # 첫 번째 클라이언트를 먼저 사용하고, 특정 조건에 따라 서킷이 열릴 경우 두 번째 클라이언트를 사용합니다.
 # 여기서 정의하는 값은 blog-client 모듈의 BlogClients enum 값을 사용합니다.
 clients:
