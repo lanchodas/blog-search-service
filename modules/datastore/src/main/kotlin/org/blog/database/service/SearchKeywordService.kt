@@ -3,6 +3,8 @@ package org.blog.database.service
 import jakarta.persistence.OptimisticLockException
 import org.blog.database.entity.SearchKeyword
 import org.blog.database.repository.SearchKeywordRepository
+import org.springframework.data.domain.PageRequest
+import org.springframework.data.domain.Sort
 import org.springframework.retry.support.RetryTemplate
 import org.springframework.stereotype.Component
 import org.springframework.transaction.annotation.Transactional
@@ -28,5 +30,11 @@ class SearchKeywordService(
                 searchKeywordRepository.save(searchKeyword)
             }
         }
+    }
+
+    fun getPopularKeywords(): List<SearchKeyword> {
+        return searchKeywordRepository.findAllByOrderBySearchCountDesc(
+            PageRequest.of(0, 10, Sort.by("searchCount").descending())
+        )
     }
 }

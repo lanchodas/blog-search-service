@@ -40,6 +40,9 @@ class BlogSearchService(
 
     /**
      * 블로그 검색할 클라이언트를 지정하고, 클라이언트를 호출하는 함수를 반환합니다.
+     * blog-client 모듈의 kakao, naver 클라이언트는 각각의 블로그 검색에만 역할이 있고,
+     * 이 둘을 어떤 순서로 실행할지는 관여하지 않습니다.
+     *
      * @param request 블로그 검색 요청 파라미터
      * @param clientOrder 클라이언트 순서
      */

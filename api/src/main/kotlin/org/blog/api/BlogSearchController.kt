@@ -3,7 +3,9 @@ package org.blog.api
 import jakarta.validation.Valid
 import org.blog.api.request.BlogSearchRequest
 import org.blog.api.response.BlogSearchResponse
+import org.blog.api.response.KeywordCountResponse
 import org.blog.api.service.BlogSearchService
+import org.blog.api.service.KeywordCountService
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.ModelAttribute
 import org.springframework.web.bind.annotation.RequestMapping
@@ -12,7 +14,8 @@ import org.springframework.web.bind.annotation.RestController
 @RestController
 @RequestMapping("/api/v1")
 class BlogSearchController(
-    private val blogSearchService: BlogSearchService
+    private val blogSearchService: BlogSearchService,
+    private val keywordCountService: KeywordCountService
 ) {
 
     /**
@@ -36,8 +39,12 @@ class BlogSearchController(
         }
     }
 
-    @GetMapping("/popular-search-keywords")
-    fun popularSearchKeywords(): String {
-        return "Hello, /popular-search-keywords"
+    /**
+     * 인기 검색어 목록 API
+     * 많이 검색한 순서 대로 최대 10개의 검색 키워드를 제공합니다.
+     */
+    @GetMapping("/search/popular-keywords")
+    fun popularKeywords(): List<KeywordCountResponse> {
+        return KeywordCountResponse.of(keywordCountService.getPopularKeywords())
     }
 }
