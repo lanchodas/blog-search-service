@@ -17,7 +17,10 @@ class BlogSearchController(
 
     /**
      * 블로그 검색 API
+     *
      * GET 요청으로 아래 파라미터들을 쿼리 스트링으로 받아 검색 결과를 반환합니다.
+     * incrementKeywordCount를 통해 검색 키워드 카운트를 증가시킵니다.
+     *
      * @param query 검색어
      * @param sort 정렬 방식 (accuracy: 정확도순, recency: 최신순)
      * @param page 페이지 번호 (1 ~ 50)
@@ -27,8 +30,10 @@ class BlogSearchController(
     fun search(
         @Valid @ModelAttribute request: BlogSearchRequest
     ): BlogSearchResponse {
-        val clientResponse = blogSearchService.search(request)
-        return BlogSearchResponse.of(clientResponse)
+        return incrementKeywordCount(request.query) {
+            val clientResponse = blogSearchService.search(request)
+            BlogSearchResponse.of(clientResponse)
+        }
     }
 
     @GetMapping("/popular-search-keywords")

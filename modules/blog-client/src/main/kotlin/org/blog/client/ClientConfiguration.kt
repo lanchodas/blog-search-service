@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration
 @EnableFeignClients
 internal class ClientConfiguration {
     @Bean
-    fun encryptor() = StandardPBEStringEncryptor().also { it.setPassword("kms password") }
+    fun encryptor() = StandardPBEStringEncryptor().apply { setPassword("kms password") }
 }
 
 enum class BlogClients {
