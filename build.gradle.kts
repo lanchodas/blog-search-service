@@ -45,16 +45,27 @@ subprojects {
         developmentOnly("org.springframework.boot:spring-boot-devtools")
     }
 
-    tasks.test {
-        useJUnitPlatform {
-            excludeTags("develop", "restdocs")
-        }
-    }
-
     tasks.withType<KotlinCompile> {
         kotlinOptions {
             freeCompilerArgs = listOf("-Xjsr305=strict")
             jvmTarget = "${project.property("jvmTarget")}"
         }
+    }
+
+    tasks.test {
+        useJUnitPlatform {
+            excludeTags("restdocs")
+        }
+    }
+
+    tasks.register<Test>("restDocsTest") {
+        group = "documentation"
+        useJUnitPlatform {
+            includeTags("restdocs")
+        }
+    }
+
+    tasks.getByName("asciidoctor") {
+        dependsOn("restDocsTest")
     }
 }

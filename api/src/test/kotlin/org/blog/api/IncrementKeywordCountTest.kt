@@ -15,7 +15,7 @@ import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
 
 @ExtendWith(MockKExtension::class)
-internal class IncrementKeywordCountKtTest {
+internal class IncrementKeywordCountTest {
 
     @BeforeEach
     fun setUp() {

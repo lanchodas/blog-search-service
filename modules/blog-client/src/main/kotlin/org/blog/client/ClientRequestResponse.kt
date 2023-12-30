@@ -11,6 +11,7 @@ interface ClientResponse {
 }
 
 data class Document(
+    val blogName: String,
     val title: String,
     val contents: String,
     val url: String,

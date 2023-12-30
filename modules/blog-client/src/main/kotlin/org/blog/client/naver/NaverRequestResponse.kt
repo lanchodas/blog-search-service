@@ -34,6 +34,7 @@ data class NaverResponse(
     override fun getSearchDocuments(): List<Document> {
         return items.map {
             Document(
+                blogName = it.bloggername,
                 title = it.title,
                 contents = it.description,
                 url = it.link,

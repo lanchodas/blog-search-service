@@ -26,6 +26,7 @@ data class KakaoResponse(
     override fun getSearchDocuments(): List<Document> {
         return documents.map {
             Document(
+                blogName = it.blogname,
                 title = it.title,
                 contents = it.contents,
                 url = it.url,
