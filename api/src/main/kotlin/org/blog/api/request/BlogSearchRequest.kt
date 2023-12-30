@@ -19,7 +19,7 @@ enum class SortType {
  * size: 카카오는 1 ~ 50 사이. 네이버는 10 ~ 100 사이입니다. 더 적은 개수 50개로 제한합니다.
  */
 data class BlogSearchRequest(
-    @field:NotBlank val query: String,
+    @field:NotBlank @field:QueryLength(20) val query: String,
     val sort: SortType? = SortType.accuracy,
     @field:Min(1) @field:Max(50) val page: Int,
     @field:Min(1) @field:Max(50) val size: Int? = 10

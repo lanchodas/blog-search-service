@@ -76,7 +76,7 @@ class BlogSearchControllerTest : RestDocsTest() {
                     ),
                     Preprocessors.preprocessResponse(Preprocessors.prettyPrint()),
                     queryParameters(
-                        parameterWithName("query").description("Required | 검색 키워드"),
+                        parameterWithName("query").description("Required | 검색 키워드. 최대 20자"),
                         parameterWithName("sort").description("Optional | 정렬 방식 (accuracy: 정확도순, recency: 최신순). 기본값 accuracy"),
                         parameterWithName("page").description("Required | 페이지 번호 (1 ~ 50)"),
                         parameterWithName("size").description("Optional | 한 페이지에 보여줄 문서 개수 (1 ~ 50). 기본값 10")
