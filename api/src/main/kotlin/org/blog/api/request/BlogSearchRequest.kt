@@ -20,24 +20,26 @@ enum class SortType {
  */
 data class BlogSearchRequest(
     @field:NotBlank val query: String,
-    val sort: SortType,
+    val sort: SortType? = SortType.accuracy,
     @field:Min(1) @field:Max(50) val page: Int,
-    @field:Min(1) @field:Max(50) val size: Int
+    @field:Min(1) @field:Max(50) val size: Int? = 10
 ) : ClientRequestTransformer {
 
     override fun toKakaoRequest(): KakaoRequest {
         val kakaoSort = when (sort) {
             SortType.accuracy -> KakaoSortType.accuracy
             SortType.recency -> KakaoSortType.recency
+            null -> KakaoSortType.accuracy
         }
-        return KakaoRequest(query, kakaoSort, page, size)
+        return KakaoRequest(query, kakaoSort, page, size!!)
     }
 
     override fun toNaverRequest(): NaverRequest {
         val naverSort = when (sort) {
             SortType.accuracy -> NaverSortType.sim
             SortType.recency -> NaverSortType.date
+            null -> NaverSortType.sim
         }
-        return NaverRequest(query, naverSort, page, size)
+        return NaverRequest(query, naverSort, page, size!!)
     }
 }
