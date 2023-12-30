@@ -1,6 +1,7 @@
 package org.blog.api.exception
 
 import org.blog.client.BlogClientException
+import org.springframework.cloud.client.circuitbreaker.NoFallbackAvailableException
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ControllerAdvice
@@ -10,7 +11,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler
 class ExceptionHandler {
 
     @ExceptionHandler(ApiException::class)
-    fun handleRuntimeException(e: ApiException): ResponseEntity<ApiErrorResponse> {
+    fun handleApiException(e: ApiException): ResponseEntity<ApiErrorResponse> {
         return ResponseEntity(
             ApiErrorResponse(e.errorType.code, e.errorType.message),
             e.errorType.httpStatus
@@ -18,15 +19,23 @@ class ExceptionHandler {
     }
 
     @ExceptionHandler(BlogClientException::class)
-    fun handleRuntimeException(e: BlogClientException): ResponseEntity<ApiErrorResponse> {
+    fun handleBlogClientException(e: BlogClientException): ResponseEntity<ApiErrorResponse> {
         return ResponseEntity(
             ApiErrorResponse(ErrorType.BLOG_CLIENT_ERROR.code, e.message),
             ErrorType.BLOG_CLIENT_ERROR.httpStatus
         )
     }
 
+    @ExceptionHandler(NoFallbackAvailableException::class)
+    fun handleNoFallbackAvailableException(e: NoFallbackAvailableException): ResponseEntity<ApiErrorResponse> {
+        return ResponseEntity(
+            ApiErrorResponse(ErrorType.NO_FALLBACK_EXCEPTION.code, e.message),
+            ErrorType.NO_FALLBACK_EXCEPTION.httpStatus
+        )
+    }
+
     @ExceptionHandler(MethodArgumentNotValidException::class)
-    fun handleRuntimeException(e: MethodArgumentNotValidException): ResponseEntity<ApiErrorResponse> {
+    fun handleMethodArgumentNotValidException(e: MethodArgumentNotValidException): ResponseEntity<ApiErrorResponse> {
         return ResponseEntity(
             ApiErrorResponse(ErrorType.BAD_REQUEST.code, e.message),
             ErrorType.BAD_REQUEST.httpStatus
@@ -34,7 +43,7 @@ class ExceptionHandler {
     }
 
     @ExceptionHandler(Exception::class)
-    fun handleRuntimeException(e: Exception): ResponseEntity<ApiErrorResponse> {
+    fun handleException(e: Exception): ResponseEntity<ApiErrorResponse> {
         val apiErrorResponse = ApiErrorResponse(
             ErrorType.INTERNAL_SERVER_ERROR.code,
             e.message ?: ErrorType.INTERNAL_SERVER_ERROR.message ?: "알 수 없는 에러가 발생했습니다."

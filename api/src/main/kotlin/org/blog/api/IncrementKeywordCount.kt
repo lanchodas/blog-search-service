@@ -4,6 +4,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import org.blog.api.service.KeywordCountService
+import org.springframework.scheduling.annotation.EnableScheduling
 import org.springframework.scheduling.annotation.Scheduled
 import org.springframework.stereotype.Component
 import java.util.concurrent.ConcurrentHashMap
@@ -18,7 +19,7 @@ import java.util.concurrent.ConcurrentHashMap
  * 100% 실시간은 아니지만 DB의 부하, 검색 횟수의 중요도 등을 고려했을 때 준 실시간으로 처리하는게
  * 외부 시스템 도움없이 구현하기에는 적절하다고 판단했습니다.
  */
-private val KEYWORD_COUNT_MAP = ConcurrentHashMap<String, Long>()
+internal val KEYWORD_COUNT_MAP = ConcurrentHashMap<String, Long>()
 
 /**
  * Spring AOP로 구현할 수도 있지만, 간단한 로직은 이런 Trailing Lambda 형태로 구현하는 것도
@@ -37,6 +38,7 @@ fun <T> incrementKeywordCount(keyword: String, function: () -> T): T {
 }
 
 @Component
+@EnableScheduling
 class ScheduledTask(private val keywordCountService: KeywordCountService) {
     /**
      * 주기적으로(직전 작업 끝난 후 5초 뒤) KEYWORD_COUNT_MAP에 저장된

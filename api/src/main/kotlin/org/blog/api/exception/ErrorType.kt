@@ -11,11 +11,13 @@ enum class ErrorType(
     INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.E500, "알 수 없는 에러가 발생했습니다."),
     ILLEGAL_ARGUMENT(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.E501, "서버 설정 오류가 있습니다."),
     BLOG_CLIENT_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.E502, null),
+    NO_FALLBACK_EXCEPTION(HttpStatus.INTERNAL_SERVER_ERROR, ErrorCode.E503, null),
 }
 
 enum class ErrorCode {
     E400,
     E500,
     E501,
-    E502
+    E502,
+    E503
 }

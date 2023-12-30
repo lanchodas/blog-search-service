@@ -39,6 +39,7 @@ subprojects {
         implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
         implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
         testImplementation("org.springframework.boot:spring-boot-starter-test")
+        testImplementation("io.mockk:mockk:${property("mockkVersion")}")
 
         kapt("org.springframework.boot:spring-boot-configuration-processor")
         developmentOnly("org.springframework.boot:spring-boot-devtools")
