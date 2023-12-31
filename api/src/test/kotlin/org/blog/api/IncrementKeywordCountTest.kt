@@ -7,6 +7,7 @@ import io.mockk.verify
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
+import org.blog.api.request.BlogSearchRequest
 import org.blog.api.service.KeywordCountService
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.BeforeEach
@@ -25,21 +26,35 @@ internal class IncrementKeywordCountTest {
     @DisplayName("검색 키워드를 KEYWORD_COUNT_MAP에 횟수와 함께 저장한다.")
     @Test
     fun `incrementKeywordCount increments the count of the keyword`() = runBlocking {
-        val keyword1 = "강아지"
-        val keyword2 = "고양이"
-        val keyword3 = "푸바오"
+        val request1 = BlogSearchRequest(query = "강아지", page = 1)
+        val request2 = BlogSearchRequest(query = "고양이", page = 1)
+        val request3 = BlogSearchRequest(query = "푸바오", page = 1)
 
-        incrementKeywordCount(keyword1) {}
-        incrementKeywordCount(keyword2) {}
-        incrementKeywordCount(keyword3) {}
-        incrementKeywordCount(keyword3) {}
-        incrementKeywordCount(keyword1) {}
-        incrementKeywordCount(keyword3) {}
+        incrementKeywordCount(request1) {}
+        incrementKeywordCount(request2) {}
+        incrementKeywordCount(request3) {}
+        incrementKeywordCount(request3) {}
+        incrementKeywordCount(request1) {}
+        incrementKeywordCount(request3) {}
 
         withContext(Dispatchers.IO) {
-            assertEquals(2, KEYWORD_COUNT_MAP[keyword1])
-            assertEquals(1, KEYWORD_COUNT_MAP[keyword2])
-            assertEquals(3, KEYWORD_COUNT_MAP[keyword3])
+            assertEquals(2, KEYWORD_COUNT_MAP[request1.query])
+            assertEquals(1, KEYWORD_COUNT_MAP[request2.query])
+            assertEquals(3, KEYWORD_COUNT_MAP[request3.query])
+        }
+    }
+
+    @DisplayName("page = 2 이상인 검색은 새로운 검색이 아니므로 KEYWORD_COUNT_MAP에 저장하지 않는다.")
+    @Test
+    fun `Increment the search count only when page is 1`() = runBlocking {
+        val request1 = BlogSearchRequest(query = "푸바오", page = 1)
+        val request2 = BlogSearchRequest(query = "푸바오", page = 2)
+
+        incrementKeywordCount(request1) {}
+        incrementKeywordCount(request2) {}
+
+        withContext(Dispatchers.IO) {
+            assertEquals(1, KEYWORD_COUNT_MAP[request1.query])
         }
     }
 

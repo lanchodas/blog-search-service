@@ -3,6 +3,7 @@ package org.blog.api
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import org.blog.api.request.BlogSearchRequest
 import org.blog.api.service.KeywordCountService
 import org.springframework.scheduling.annotation.EnableScheduling
 import org.springframework.scheduling.annotation.Scheduled
@@ -27,10 +28,13 @@ internal val KEYWORD_COUNT_MAP = ConcurrentHashMap<String, Long>()
  * KEYWORD_COUNT_MAP에 검색 키워드가 존재하지 않으면 1로 초기화하고, 존재하면 1을 더합니다.
  * 원래 필요한 로직인 블로그 검색 기능과 별도로 동작하게 하기 위해 코루틴 사용했습니다.
  */
-fun <T> incrementKeywordCount(keyword: String, function: () -> T): T {
-    CoroutineScope(Dispatchers.IO).launch {
-        KEYWORD_COUNT_MAP.compute(keyword) { _, count ->
-            count?.plus(1) ?: 1
+fun <T> incrementKeywordCount(request: BlogSearchRequest, function: () -> T): T {
+    // page가 2 이상인 것은 새로운 검색이라고 간주하지 않기 때문에 page = 1일 때만 카운트를 증가시킵니다.
+    if (request.page == 1) {
+        CoroutineScope(Dispatchers.IO).launch {
+            KEYWORD_COUNT_MAP.compute(request.query) { _, count ->
+                count?.plus(1) ?: 1
+            }
         }
     }
 
