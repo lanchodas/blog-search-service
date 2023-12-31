@@ -33,7 +33,7 @@ class BlogSearchController(
     fun search(
         @Valid @ModelAttribute request: BlogSearchRequest
     ): BlogSearchResponse {
-        return incrementKeywordCount(request.query) {
+        return incrementKeywordCount(request) {
             val clientResponse = blogSearchService.search(request)
             BlogSearchResponse.of(clientResponse)
         }
